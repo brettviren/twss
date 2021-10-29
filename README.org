@@ -1,0 +1,29 @@
+#+title: Thread (FFTW in Eigen3) With Simple Safety
+
+* What is?
+
+A simple thread-safe implementation of the second template parameter
+of ~Eigen::FFT~
+
+* How do?
+
+#+begin_src c++
+  #include <eigen3/unsupported/Eigen/FFT>
+  #include <twss.hpp>
+  using MyFFT = Eigen::FFT<double, twss::fftw_impl<double> >;
+  
+  // thread worker function
+  void my_worker(MyFFT& fft) { /* use fft with confidence */ }
+#+end_src
+
+* How does?
+
+~twss~ simply provides a variant of ~Eigen::internal::fftw_impl<T>~ which
+adds ~std::mutex~ locks around any plan construction. No big whoop.
+
+* No way!
+
+Yes way.  But, user beware.  This is not just extending "unsupported"
+API but via a private interface.  Given there's been no movement on
+~Eigen::FFT~ in like forever, and given you must have already accepted
+use of "unsupported" code to care, it's probably okay to use this.
