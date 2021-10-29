@@ -8,8 +8,8 @@ of ~Eigen::FFT~
 * How do?
 
 #+begin_src c++
-  #include <eigen3/unsupported/Eigen/FFT>
-  #include <twss.hpp>
+  #include <unsupported/Eigen/FFT>
+  #include "twss.hpp"
   using MyFFT = Eigen::FFT<double, twss::fftw_impl<double> >;
   
   // thread worker function
@@ -27,3 +27,15 @@ Yes way.  But, user beware.  This is not just extending "unsupported"
 API but via a private interface.  Given there's been no movement on
 ~Eigen::FFT~ in like forever, and given you must have already accepted
 use of "unsupported" code to care, it's probably okay to use this.
+
+* Prove it!
+
+#+begin_src shell :exports both :results output code :wrap "example"
+  g++ -I/usr/include/eigen3 -std=c++17 -o twss-utest twss-utest.cpp
+  ./twws-utest
+#+end_src
+
+#+RESULTS:
+#+begin_example
+#+end_example
+

@@ -54,7 +54,7 @@ namespace twss {
   template <> 
   struct fftw_plan<float>
   {
-      static std::mutex g_plan_mutex;
+      std::mutex* g_plan_mutex{new std::mutex};
       typedef float scalar_type;
       typedef fftwf_complex complex_type;
       fftwf_plan m_plan;
@@ -64,7 +64,7 @@ namespace twss {
       inline
       void fwd(complex_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwf_plan_dft_1d(nfft,src,dst, FFTW_FORWARD, FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwf_execute_dft( m_plan, src,dst);
@@ -72,7 +72,7 @@ namespace twss {
       inline
       void inv(complex_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwf_plan_dft_1d(nfft,src,dst, FFTW_BACKWARD , FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwf_execute_dft( m_plan, src,dst);
@@ -80,7 +80,7 @@ namespace twss {
       inline
       void fwd(complex_type * dst,scalar_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwf_plan_dft_r2c_1d(nfft,src,dst,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwf_execute_dft_r2c( m_plan,src,dst);
@@ -88,7 +88,7 @@ namespace twss {
       inline
       void inv(scalar_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwf_plan_dft_c2r_1d(nfft,src,dst,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwf_execute_dft_c2r( m_plan, src,dst);
@@ -97,7 +97,7 @@ namespace twss {
       inline 
       void fwd2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwf_plan_dft_2d(n0,n1,src,dst,FFTW_FORWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwf_execute_dft( m_plan, src,dst);
@@ -105,7 +105,7 @@ namespace twss {
       inline 
       void inv2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwf_plan_dft_2d(n0,n1,src,dst,FFTW_BACKWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwf_execute_dft( m_plan, src,dst);
@@ -115,7 +115,7 @@ namespace twss {
   template <> 
   struct fftw_plan<double>
   {
-      static std::mutex g_plan_mutex;
+      std::mutex* g_plan_mutex{new std::mutex};
       typedef double scalar_type;
       typedef fftw_complex complex_type;
       ::fftw_plan m_plan;
@@ -125,7 +125,7 @@ namespace twss {
       inline
       void fwd(complex_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_1d(nfft,src,dst, FFTW_FORWARD, FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftw_execute_dft( m_plan, src,dst);
@@ -133,7 +133,7 @@ namespace twss {
       inline
       void inv(complex_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_1d(nfft,src,dst, FFTW_BACKWARD , FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftw_execute_dft( m_plan, src,dst);
@@ -141,7 +141,7 @@ namespace twss {
       inline
       void fwd(complex_type * dst,scalar_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_r2c_1d(nfft,src,dst,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftw_execute_dft_r2c( m_plan,src,dst);
@@ -149,7 +149,7 @@ namespace twss {
       inline
       void inv(scalar_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_c2r_1d(nfft,src,dst,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftw_execute_dft_c2r( m_plan, src,dst);
@@ -157,7 +157,7 @@ namespace twss {
       inline 
       void fwd2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_2d(n0,n1,src,dst,FFTW_FORWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftw_execute_dft( m_plan, src,dst);
@@ -165,7 +165,7 @@ namespace twss {
       inline 
       void inv2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_2d(n0,n1,src,dst,FFTW_BACKWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftw_execute_dft( m_plan, src,dst);
@@ -174,7 +174,7 @@ namespace twss {
   template <> 
   struct fftw_plan<long double>
   {
-      static std::mutex g_plan_mutex;
+      std::mutex* g_plan_mutex{new std::mutex};
       typedef long double scalar_type;
       typedef fftwl_complex complex_type;
       fftwl_plan m_plan;
@@ -184,7 +184,7 @@ namespace twss {
       inline
       void fwd(complex_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwl_plan_dft_1d(nfft,src,dst, FFTW_FORWARD, FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwl_execute_dft( m_plan, src,dst);
@@ -192,7 +192,7 @@ namespace twss {
       inline
       void inv(complex_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwl_plan_dft_1d(nfft,src,dst, FFTW_BACKWARD , FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwl_execute_dft( m_plan, src,dst);
@@ -200,7 +200,7 @@ namespace twss {
       inline
       void fwd(complex_type * dst,scalar_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwl_plan_dft_r2c_1d(nfft,src,dst,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwl_execute_dft_r2c( m_plan,src,dst);
@@ -208,7 +208,7 @@ namespace twss {
       inline
       void inv(scalar_type * dst,complex_type * src,int nfft) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwl_plan_dft_c2r_1d(nfft,src,dst,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwl_execute_dft_c2r( m_plan, src,dst);
@@ -216,7 +216,7 @@ namespace twss {
       inline 
       void fwd2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwl_plan_dft_2d(n0,n1,src,dst,FFTW_FORWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwl_execute_dft( m_plan, src,dst);
@@ -224,7 +224,7 @@ namespace twss {
       inline 
       void inv2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
-              std::lock_guard<std::mutex> guard(g_plan_mutex);
+              std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftwl_plan_dft_2d(n0,n1,src,dst,FFTW_BACKWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
           fftwl_execute_dft( m_plan, src,dst);
