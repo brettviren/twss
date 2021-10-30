@@ -9,7 +9,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include <map>
 #include <mutex>
+#include <complex>
+#include <iostream>             // temp debug
 
 namespace Eigen { 
 
@@ -157,6 +160,7 @@ namespace twss {
       inline 
       void fwd2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
+              std::cerr << "fwd2 " << n0 << " x " << n1 << std::endl;
               std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_2d(n0,n1,src,dst,FFTW_FORWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
@@ -165,6 +169,7 @@ namespace twss {
       inline 
       void inv2( complex_type * dst,complex_type * src,int n0,int n1) {
           if (m_plan==NULL) {
+              std::cerr << "inv2 " << n0 << " x " << n1 << std::endl;
               std::lock_guard<std::mutex> guard(*g_plan_mutex);
               m_plan = fftw_plan_dft_2d(n0,n1,src,dst,FFTW_BACKWARD,FFTW_ESTIMATE|FFTW_PRESERVE_INPUT);
           }
@@ -240,14 +245,14 @@ namespace twss {
       inline
       void clear() 
       {
-        m_plans.clear();
+          m_plans.clear();
       }
 
       // complex-to-complex forward FFT
       inline
       void fwd( Complex * dst,const Complex *src,int nfft)
       {
-        get_plan(nfft,false,dst,src).fwd(fftw_cast(dst), fftw_cast(src),nfft );
+          get_plan(nfft,false,dst,src).fwd(fftw_cast(dst), fftw_cast(src),nfft );
       }
 
       // real-to-complex forward FFT
@@ -268,25 +273,25 @@ namespace twss {
       inline
       void inv(Complex * dst,const Complex  *src,int nfft)
       {
-        get_plan(nfft,true,dst,src).inv(fftw_cast(dst), fftw_cast(src),nfft );
+          get_plan(nfft,true,dst,src).inv(fftw_cast(dst), fftw_cast(src),nfft );
       }
 
       // half-complex to scalar
       inline
       void inv( Scalar * dst,const Complex * src,int nfft) 
       {
-        get_plan(nfft,true,dst,src).inv(fftw_cast(dst), fftw_cast(src),nfft );
+          get_plan(nfft,true,dst,src).inv(fftw_cast(dst), fftw_cast(src),nfft );
       }
 
       // 2-d complex-to-complex
       inline
       void inv2(Complex * dst, const Complex * src, int n0,int n1)
       {
-        get_plan(n0,n1,true,dst,src).inv2(fftw_cast(dst), fftw_cast(src) ,n0,n1);
+          get_plan(n0,n1,true,dst,src).inv2(fftw_cast(dst), fftw_cast(src) ,n0,n1);
       }
 
 
-  protected:
+    protected:
       typedef fftw_plan<Scalar> PlanData;
 
       typedef Eigen::numext::int64_t int64_t;

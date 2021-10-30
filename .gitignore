@@ -1,2 +1,7 @@
 *~
 twss-utest
+twss-threads
+log.*
+err.*
+callgrind.*
+fftw-*
